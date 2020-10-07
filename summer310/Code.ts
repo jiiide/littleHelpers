@@ -55,7 +55,7 @@ const googleDocMimetype = 'application/vnd.google-apps.document'
  * Not sure what the 'id' parameter is used for here.
  */
 
-function genFolder(id, name) {
+function genFolder(id: string, name: string) {
   // id is the student ID, name is the actual name
   var parentFolder = DriveApp.getFolderById(individualFolderId())
   var studentFolder = parentFolder.createFolder(name)
@@ -124,7 +124,7 @@ function convertTxt2Doc()
  * remove the wid as an editor.
  */
 
-function accessControlFile(document, wid, thisFolder, unshare)
+function accessControlFile(document:string, wid:string, thisFolder:string, unshare:boolean)
 {
     console.log(`about to share ${document} with ${wid}`)
     var files = thisFolder.getFilesByName(document)
@@ -261,7 +261,7 @@ function testX1ForEachStudent()
  * Not sure what this is for.
  * the "instanceof" operator checks if an object is of a certain class.
  */
-function isEmptyString(str)
+function isEmptyString(str:string)
 {
   console.log(str)
   console.log(typeof str)
@@ -300,7 +300,7 @@ function createDailyLogs()
 {
   var dailyLogFolder = DriveApp.getFolderById(dailyLogFolderId())
   forEachStudent(
-      (wid, number) =>
+      (wid:string, number:number) =>
     {
     let filename = `${dailyLog}-${number}`
     
@@ -359,7 +359,7 @@ function handleX1()
 {
   var x1Folder = DriveApp.getFolderById(x1FolderId())
   x1ForEachStudent(
-    (wid,number,timeslot,startTime,endTime) =>
+    (wid:string,number:number,timeslot,startTime,endTime) => //times are as Date() objects
     {
     let currentTime = Date.now()
     let action = 0
@@ -643,7 +643,7 @@ function checkDailyLog()
  * editNotView is a boolean.
  */
 
-function shareDocument(prefix, editNotView, unshare = false)
+function shareDocument(prefix:string, editNotView:boolean, unshare:boolean = false)
 {
   const classSize = 51
   var spreadsheet = SpreadsheetApp.openById(spreadsheetId())
@@ -702,7 +702,7 @@ function shareDocument(prefix, editNotView, unshare = false)
  * Just checks whether a document is past a due date
  */
 
-function checkTime(unshare = false)
+function checkTime(unshare:boolean = false)
 {
   var spreadsheet = SpreadsheetApp.openById('1oQ_GMFIGME6gn8r-X3k5gn-etjTepaBDLep8-zf6cUk')
   var sheet = spreadsheet.getSheetByName('students')
