@@ -11,10 +11,11 @@ function isProfessor(email: string) {
   var hasNumbers = /\d+/.test(email);
   if(hasDomain && !hasNumbers){
       console.log(`${email} is a Professor.`)
+      return true;
   }
   else{
       console.log(`${email} is not a valid email.`)
+      return false;
   }
 }
-//still needs to email a code; also needs a popup that blocks
-//webApp usage
+//still needs to email a code; also needs a popup that blocks webApp usage

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    
+    <title>Little Helpers</title>
+    <style>
+      header {
+        background-color: #000;
+        padding: 30px;
+        text-align: center;
+        font-size: 35px;
+        color: white;
+      }
+      
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+    /* Modal Content */
+      .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+        }
+
+    /* Add Animation */
+      @-webkit-keyframes animatetop {
+      from {top:-300px; opacity:0} 
+      to {top:0; opacity:1}
+      }
+
+      @keyframes animatetop {
+      from {top:-300px; opacity:0}
+      to {top:0; opacity:1}
+      }
+
+    /* The Close Button */
+      .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .modal-header {
+        padding: 4px 16px;
+        background-color: rgba(27, 27, 27, 0.5);
+        color: white;
+      }
+
+      .modal-body {padding: 4px 16px;}
+
+      .modal-footer {
+        padding: 2px 16px;
+        background-color: rgba(27, 27, 27, 0.5);
+        color: white;
+      }
+    </style>
+  </head>
+  
+  
+  <body>
+    <header>Little Helpers</header>
+    
+    <div class="container">
+      <br>
+      <h3>Enter Your ARC Professor Email (ex:doej@arc.losrios.edu)</h3>
+      <br>
+      <div class="form-group">
+        <label for="pmail-input">Professor email:</label>
+        <input type="text" class="form-control" id="pmail-input">
+      </div>
+
+      <button type="button" class="btn btn-secondary" id="checkBtn" onclick="emailCheck()">
+      Enter
+      </button>
+      
+    </div>
+    <br>
+    <br>
+    
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>Check your email</h5>
+            <span class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="code">Enter code:</label>
+                <input type="text" class="form-control" id="code">
+            </div>
+            <button type="button" class="btn btn-secondary" id="codeBtn" onclick="">
+            Enter
+            </button>
+            <br>
+          </div>
+          <div class="modal-footer">
+            <h5> </h5>
+          </div>
+        </div>
+      
+    </div>
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script>
+    var input = document.getElementById("pmail-input");
+    input.addEventListener("keyup",function(e){
+        if(e.keyCode === 13){
+            e.preventDefault();
+            document.getElementById("checkBtn").click();
+        }
+    });
+
+    
+    
+    //get modal
+    var modal = document.getElementById("myModal");
+    //get span element to close modal
+    var span = document.getElementsByClassName("close")[0];
+    //close modal on clicking span element
+    span.onclick = function(){
+        modal.style.display = "none"
+    }
+      
+    function emailCheck(){
+        // display modal
+        modal.style.display = "block";
+
+        var pmail = document.getElementById("pmail-input").value;
+        var check = google.script.run.isProfessor(pmail);
+        if(check){
+            
+        }
+        document.getElementById("pmail-input").value = "";
+    }
+
+
+    </script>
+    
+  </body>
+</html>
+
+
