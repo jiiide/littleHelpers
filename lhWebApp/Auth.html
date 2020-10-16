@@ -75,7 +75,7 @@
 
       .modal-header {
         padding: 4px 16px;
-        background-color: rgba(27, 27, 27, 0.5);
+        background-color: rgba(255, 0, 0, 0.8);
         color: white;
       }
 
@@ -83,8 +83,12 @@
 
       .modal-footer {
         padding: 2px 16px;
-        background-color: rgba(27, 27, 27, 0.5);
+        background-color: rgba(255, 0, 0, 0.8);
         color: white;
+      }
+      span.psw {
+        float: right;
+        padding-top: 16px;
       }
     </style>
   </head>
@@ -102,7 +106,7 @@
         <input type="text" class="form-control" id="pmail-input">
       </div>
 
-      <button type="button" class="btn btn-secondary" id="checkBtn" onclick="emailCheck()">
+      <button type="button" class="btn btn-primary" id="check-btn" onclick="emailMatch()">
       Enter
       </button>
       
@@ -110,29 +114,70 @@
     <br>
     <br>
     
-    <div id="myModal" class="modal">
+    <div id="modal-signup" class="modal">
 
         <!-- Modal content -->
         <div class="modal-content">
           <div class="modal-header">
-            <h5>Check your email</h5>
-            <span class="close">&times;</span>
+            <h5>Email not in database. Check your email for a code and sign up.</h5>
+            <span onclick="closeSignUp()" class="close" >&times;</span>
           </div>
           <div class="modal-body">
+          
             <div class="form-group">
-                <label for="code">Enter code:</label>
-                <input type="text" class="form-control" id="code">
+                <label for="access-input" >Enter code:</label>
+                <input type="text" class="form-control" id="access-input" autocomplete="off">
             </div>
-            <button type="button" class="btn btn-secondary" id="codeBtn" onclick="">
+
+            <div class="form-group">
+                <label for="new-pw">Enter New Password:</label>
+                <input type="password" value="" class="form-control" id="new-pw">
+            </div>
+            
+            <div class="form-group">
+                <label for="pw-recheck">Re-Enter New Password:</label>
+                <input type="password" value="" class="form-control" id="pw-recheck">
+            </div>
+            <input type="checkbox" onclick="showPassword('new-pw');showPassword('pw-recheck')"> Show Passwords
+            <br>
+            <br>
+            <button type="button" class="btn btn-primary" id="signup-btn" onclick="signUp()">
             Enter
             </button>
             <br>
+            
           </div>
           <div class="modal-footer">
-            <h5> </h5>
+            <h5></h5>
           </div>
         </div>
-      
+    </div>
+    
+    <div id="modal-login" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>Valid User</h5>
+            <span onclick="closeLogin()" class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="pw-login">Enter password:</label>
+                <input type="password" class="form-control" id="pw-login">
+                <input type="checkbox" onclick="showPassword('pw-login')"> Show Password
+            </div>
+            
+            <br>
+            <button type="button" class="btn btn-primary" id="login-btn" onclick="checkPassword()">
+            Enter
+            </button>
+
+          </div>
+          <div class = "modal-body" style="background-color:#f1f1f1">
+            <span class="psw" ><a href="javascript:forgotPassword(document.getElementById('pmail-input').value)">Forgot password?</a></span>
+          </div>
+        </div>
     </div>
     
     <!-- Optional JavaScript -->
@@ -141,40 +186,109 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script>
-    var input = document.getElementById("pmail-input");
-    input.addEventListener("keyup",function(e){
+
+    function enterClick(inputId, btnId){
+      var input = document.getElementById(inputId);
+      input.addEventListener("keyup",function(e){
         if(e.keyCode === 13){
-            e.preventDefault();
-            document.getElementById("checkBtn").click();
+          e.preventDefault();
+          document.getElementById(btnId).click();
         }
-    });
-
-    
-    
-    //get modal
-    var modal = document.getElementById("myModal");
-    //get span element to close modal
-    var span = document.getElementsByClassName("close")[0];
-    //close modal on clicking span element
-    span.onclick = function(){
-        modal.style.display = "none"
+      })
     }
+    enterClick("pmail-input", "check-btn"); //allows user to "enter" without clicking button
+    enterClick("access-input", "code-btn");
+    enterClick("pw-login", "login-btn");
+    
+    function closeSignUp(){
+      document.getElementById("modal-signup").style.display = "none";
+    }
+    
+    function closeLogin(){
+      document.getElementById("modal-login").style.display = "none";
+    }
+    
+    function emailMatch(){
+      // check if email is within database
+      // if the email is in the database, direct to modalLogin
+      // if the email is not in the database, direct to modalSignUp
+      var pmail = document.getElementById("pmail-input").value;
+      google.script.run.withSuccessHandler(function(isMatch){
+          if(isMatch){
+            document.getElementById("modal-login").style.display = "block";
+          }
+          else{
+            emailCheck(document.getElementById("pmail-input").value)
+          }   
+      }).inDataBase(pmail);
+    }
+    
+    function emailCheck(pmail){
+      google.script.run.withSuccessHandler(function(hasSent){
+        if(hasSent){
+          document.getElementById("modal-signup").style.display = "block";
+        }
+        else{
+          alert("Please enter an ARC professor email.")
+          document.getElementById("pmail-input").value = "";
+        }
+      }).isProfessor(pmail)
+    }
+    
+    function signUp(){
+      var user = document.getElementById("pmail-input").value;
+      var accessInput = document.getElementById("access-input").value;
+      var pwInput = document.getElementById("new-pw").value;
+      var rePwInput = document.getElementById("pw-recheck").value;
       
-    function emailCheck(){
-        // display modal
-        modal.style.display = "block";
-
-        var pmail = document.getElementById("pmail-input").value;
-        var check = google.script.run.isProfessor(pmail);
-        if(check){
-            
+      google.script.run.withSuccessHandler(function(acPWvalid){
+        if(acPWvalid[0], acPWvalid[1]){
+          alert("User successfully created. Redirecting to login.");
+          document.getElementById("modal-login").style.display = "block";
+          document.getElementById("modal-signup").style.display = "none";
         }
-        document.getElementById("pmail-input").value = "";
+        else if(!acPWvalid[0] || !acPWvalid[1]){
+          alert("Either access code is invalid or passwords mismatch. Please try again.");
+        }
+      }).addUser(user, accessInput, pwInput, rePwInput);
     }
-
-
-    </script>
     
+    function showPassword(pw) {
+      var x = document.getElementById(pw);
+      if (x.type === "password") {
+        x.type = "text";
+      } 
+      else {
+        x.type = "password";
+      }
+    }
+    
+    function forgotPassword(email){
+      google.script.run.withSuccessHandler(function(hasSent){
+        if(hasSent){
+          alert("Password has been sent to your email.")
+        }
+      }).sendCode(email);
+    }
+    
+    function checkPassword(){
+      var user = document.getElementById("pmail-input").value;
+      var pwLogin = document.getElementById("pw-login").value;
+      
+      google.script.run.withSuccessHandler(function(match){
+        if(match){
+          google.script.run.withSuccessHandler(function(page){
+              document.open();   //should work fine without this
+              document.write(page);
+              document.close();  //should work fine without this
+          }).newPage('Index');
+        }
+        else{
+          alert("Password mismatch. Please try again.");
+        }
+      }).checkUser(user, pwLogin)
+    }
+    </script>
   </body>
 </html>
 
