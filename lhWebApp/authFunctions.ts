@@ -22,8 +22,8 @@ function inDataBase(emailInput: string) {
   
   // check if email input is an email in the database
   var isMatch: boolean = false;
-  for (var pair in data){
-    if (emailInput == pair){ 
+  for (var email in data){
+    if (emailInput == email){ 
       isMatch = true;
       Logger.log(`${emailInput} was in user database.`)
     }
@@ -46,8 +46,8 @@ function isProfessor(emailInput: string) {
     if (hasDomain && hasNumbers) { //change to !hasNumbers
       
         //create a user in the database with the email and a generated access code
-        dataBase.setProperty(emailInput, accessCode)
-        console.log(emailInput + " is a Professor.");
+        dataBase.setProperty(emailInput, accessCode.hashCode())
+        Logger.log(emailInput + " is a Professor.");
       
         //send access code to the user
         MailApp.sendEmail({
@@ -59,7 +59,7 @@ function isProfessor(emailInput: string) {
         return true;
     }
     else {
-        console.log(emailInput + " is not a valid email.");
+        Logger.log(emailInput + " is not a valid email.");
         return false;
     }
 }
@@ -68,27 +68,30 @@ function isProfessor(emailInput: string) {
 function addUser(user: string, accessInput: string, pwInput: string, rePwInput: string){
     //bring up user with corresponding code
     var dataBase = PropertiesService.getScriptProperties();
-    var accessCode: string = dataBase.getProperty(user);
+    var hashedAccessCode = dataBase.getProperty(user);
     
     //test code input with actual code
-    var acRegex = new RegExp(accessCode);
-    var acMatch: boolean = acRegex.test(accessInput);
+    var hashedAcInput: string = accessInput.hashCode();
+    var acMatch: boolean = (hashedAccessCode == hashedAcInput);
     
     //test if passwords match
     var pwRegex = new RegExp(pwInput);
     var pwMatch: boolean = pwRegex.test(rePwInput);
-    
+    Logger.log("acMatch : "+ acMatch, "pwMatch : "+ pwMatch);
+  
     if (acMatch && pwMatch){
       //set accessCode to new password input
-      dataBase.setProperty(user, pwInput);
+      dataBase.setProperty(user, pwInput.hashCode());
     }
+    Logger.log(hashedAccessCode);
+    Logger.log(pwInput.hashCode());
     return [acMatch, pwMatch];
 }
 
-function sendCode(user){
+function sendCode(user: string){
   //brings up user's code
   var dataBase = PropertiesService.getScriptProperties();
-  var accessCode: string = dataBase.getProperty(user);
+  var accessCode = dataBase.getProperty(user);
   //sends code to user
   MailApp.sendEmail({
      to: user,
@@ -102,11 +105,26 @@ function sendCode(user){
 function checkUser(user: string, pwInput: string){
   //bring up user with corresponding code
   var dataBase = PropertiesService.getScriptProperties();
-  var pw: string = dataBase.getProperty(user);
+  var pw = dataBase.getProperty(user);
   
   //test password input with actual password
-  var pwRegex = new RegExp(pw);
-  var pwMatch: boolean = pwRegex.test(pwInput);
+  var hashedPwInput = pwInput.hashCode();
+  var pwMatch = (pw == hashedPwInput);
   
+  Logger.log(hashedPwInput);
   return pwMatch;
+}
+
+//creates a hash code from strings
+String.prototype.hashCode = function() {
+    var hash = 0;
+    if (this.length == 0) {
+        return hash;
+    }
+    for (var i = 0; i < this.length; i++) {
+        var char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char; //(hash * 2 ** 5)-hash; (<< means left shift)
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
 }

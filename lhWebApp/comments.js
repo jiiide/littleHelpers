@@ -6,14 +6,15 @@
 //user checks email and enters access code into some input
 //keep database of valid emails
 
-/*
+
 function resetDataBase(){
   var scriptProperties = PropertiesService.getScriptProperties();
   scriptProperties.deleteAllProperties();
+  scriptProperties.setProperty("email", "access code");
+  Logger.log(scriptProperties.getProperty("email"));
 }
-*/
 
-/*
+
 function viewProperties(){
   var scriptProperties = PropertiesService.getScriptProperties();
   var data = scriptProperties.getProperties();
@@ -21,4 +22,4 @@ function viewProperties(){
      Logger.log("Key: %s, Value: %s", key, data[key]);
   }
 }
-*/ 
+
