@@ -23,3 +23,7 @@ function viewProperties(){
   }
 }
 
+function clearCache(){
+  var cache = CacheService.getUserCache();
+  cache.removeAll(["w1750999@apps.losrios.edu", "j.d.alindogan@gmail.com"]);
+}

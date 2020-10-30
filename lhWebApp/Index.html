@@ -22,7 +22,7 @@
   </head>
   
   
-  <body>
+  <body onmousemove="addActivity()">
     <header>Little Helpers</header>
     
     <div class="container">
@@ -91,7 +91,21 @@
         document.getElementById("main-folder-url").value = "";
         document.getElementById("student-ss-url").value = "";
       }
-
+      
+    var activityCount = 0;
+    function addActivity(){
+      activityCount++;
+    }
+    setInterval(function(){
+      if (activityCount > 0){
+        sessionIncrease();
+        activityCount = 0;
+      }
+    }, 1000*60*29);
+      
+    function sessionIncrease(){
+      google.script.run.extendSession();
+    }
     </script>
     
   </body>

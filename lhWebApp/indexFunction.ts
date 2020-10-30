@@ -1,6 +1,6 @@
-function addStudent(data: string) {
+function addStudent(data:string) {
     console.log(data);
 }
-function getId(url: string) {
+function getId(url:string) {
     console.log(url.match(/[-\w]{25,}/)[0]);
 }

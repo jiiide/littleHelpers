@@ -94,7 +94,7 @@
   </head>
   
   
-  <body>
+  <body onmousemove="addActivity()">
     <header>Little Helpers</header>
     
     <div class="container">
@@ -277,6 +277,7 @@
       
       google.script.run.withSuccessHandler(function(match){
         if(match){
+          google.script.run.grantAccess();
           google.script.run.withSuccessHandler(function(page){
               document.open();   //should work fine without this
               document.write(page);
@@ -287,6 +288,21 @@
           alert("Password mismatch. Please try again.");
         }
       }).checkUser(user, pwLogin)
+    }
+    
+    var activityCount = 0;
+    function addActivity(){
+      activityCount++;
+    }
+    setInterval(function(){
+      if (activityCount > 0){
+        sessionIncrease();
+        activityCount = 0;
+      }
+    }, 1000*60*10); //checks for activity every 10minutes
+      
+    function sessionIncrease(){
+      google.script.run.extendSession();
     }
     </script>
   </body>
