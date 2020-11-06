@@ -180,6 +180,44 @@
         </div>
     </div>
     
+    <div id="modal-forgot" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>A code has been sent to your email.</h5>
+            <span onclick="closeForgot()" class="close" >&times;</span>
+          </div>
+          <div class="modal-body">
+          
+            <div class="form-group">
+                <label for="access-input" >Enter code:</label>
+                <input type="text" class="form-control" id="faccess-input" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="fnew-pw">Enter New Password:</label>
+                <input type="password" value="" class="form-control" id="fnew-pw">
+            </div>
+            
+            <div class="form-group">
+                <label for="fpw-recheck">Re-Enter New Password:</label>
+                <input type="password" value="" class="form-control" id="fpw-recheck">
+            </div>
+            <input type="checkbox" onclick="showPassword('fnew-pw');showPassword('fpw-recheck')"> Show Passwords
+            <br>
+            <br>
+            <button type="button" class="btn btn-primary" id="forgot-btn" onclick="changePW()">
+            Enter
+            </button>
+            <br>
+            
+          </div>
+          <div class="modal-footer">
+            <h5></h5>
+          </div>
+        </div>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -196,8 +234,10 @@
         }
       })
     }
+
     enterClick("pmail-input", "check-btn"); //allows user to "enter" without clicking button
-    enterClick("access-input", "code-btn");
+    enterClick("pw-recheck", "signup-btn");
+    enterClick("fpw-recheck", "forgot-btn");
     enterClick("pw-login", "login-btn");
     
     function closeSignUp(){
@@ -206,6 +246,10 @@
     
     function closeLogin(){
       document.getElementById("modal-login").style.display = "none";
+    }
+    
+    function closeForgot(){
+      document.getElementById("modal-forgot").style.display = "none";
     }
     
     function emailMatch(){
@@ -224,6 +268,7 @@
     }
     
     function emailCheck(pmail){
+      //check if email is a valid professor email
       google.script.run.withSuccessHandler(function(hasSent){
         if(hasSent){
           document.getElementById("modal-signup").style.display = "block";
@@ -246,6 +291,26 @@
           alert("User successfully created. Redirecting to login.");
           document.getElementById("modal-login").style.display = "block";
           document.getElementById("modal-signup").style.display = "none";
+          document.getElementById("modal-forgot").style.display = "none";
+        }
+        else if(!acPWvalid[0] || !acPWvalid[1]){
+          alert("Either access code is invalid or passwords mismatch. Please try again.");
+        }
+      }).addUser(user, accessInput, pwInput, rePwInput);
+    }
+    
+    function changePW(){
+      var user = document.getElementById("pmail-input").value;
+      var accessInput = document.getElementById("faccess-input").value;
+      var pwInput = document.getElementById("fnew-pw").value;
+      var rePwInput = document.getElementById("fpw-recheck").value;
+      
+      google.script.run.withSuccessHandler(function(acPWvalid){
+        if(acPWvalid[0], acPWvalid[1]){
+          alert("Password successfully updated. Redirecting to login.");
+          document.getElementById("modal-login").style.display = "block";
+          document.getElementById("modal-signup").style.display = "none";
+          document.getElementById("modal-forgot").style.display = "none";
         }
         else if(!acPWvalid[0] || !acPWvalid[1]){
           alert("Either access code is invalid or passwords mismatch. Please try again.");
@@ -266,7 +331,7 @@
     function forgotPassword(email){
       google.script.run.withSuccessHandler(function(hasSent){
         if(hasSent){
-          alert("Password has been sent to your email.")
+          document.getElementById("modal-forgot").style.display = "block";
         }
       }).sendCode(email);
     }
