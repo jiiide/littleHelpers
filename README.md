@@ -1,2 +1,2 @@
 # littleHelpers
-The little helpers project will probably be hosted by this email: littlehelpers.noreply@gmail.com // pw: littlehelpers77 bd: 10/9/2000
+A googlescript google apps project for assisting professors in test, quiz, and homework distribution and grading.
